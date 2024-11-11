@@ -128,7 +128,7 @@ CREATE TABLE Rentals (
     FOREIGN KEY (apartment_id) REFERENCES Apartments(apartment_id),
     FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
 );
-\```
+```
 
 Каждая из этих таблиц имеет свои атрибуты:
 
