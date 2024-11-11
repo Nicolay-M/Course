@@ -141,6 +141,121 @@ Employees — данные о сотрудниках агентства, их д
 Rentals — данные о заключенных договорах аренды, ссылаются на клиента, квартиру и сотрудника, который оформил аренду.
 
 
+### Запросы к базе данных агентства аренды квартир играют ключевую роль в обеспечении эффективного управления данными, автоматизации процессов и поддержки бизнес-операций агентства. Используя SQL-запросы, можно выполнять различные действия, такие как добавление, изменение, удаление данных и их анализ. В рамках данной базы данных запросы позволяют:
+
+Управлять информацией о клиентах, квартирах, сотрудниках и аренде: добавлять новых клиентов и сотрудников, обновлять данные о квартирах и договорах аренды.
+Получать актуальные данные для анализа и отчетности: получать информацию о доступных квартирах, завершенных арендах, выручке и статистике по аренде.
+Поддерживать порядок и точность данных: обновлять или удалять устаревшие данные, такие как истекшие договоры аренды или недействительные контактные данные.
+Обеспечить доступ к критически важным данным для принятия решений: с помощью запросов сотрудники агентства могут быстро найти подходящие квартиры для аренды, отслеживать занятость, устанавливать цены и анализировать рыночные тенденции.
+Эти запросы позволяют автоматизировать управление базой данных и поддерживать высокую эффективность работы агентства.
+
+### SQL-запросы PostgreSQL для базы данных агентства аренды квартир
+
+
+```sql
+-- 1. Добавление нового клиента
+INSERT INTO Clients (first_name, last_name, email, phone)
+VALUES ('Анна', 'Смирнова', 'anna.smirnova@example.com', '+79123456789');
+
+-- 2. Добавление новой квартиры
+INSERT INTO Apartments (address, number_of_rooms, area, price, available)
+VALUES ('ул. Пушкина, д. 10', 2, 55, 30000, TRUE);
+
+-- 3. Добавление нового сотрудника
+INSERT INTO Employees (first_name, last_name, position)
+VALUES ('Сергей', 'Иванов', 'Менеджер');
+
+-- 4. Создание новой записи об аренде
+INSERT INTO Rentals (client_id, apartment_id, employee_id, start_date, end_date, rental_price)
+VALUES (1, 2, 1, '2024-11-01', '2025-11-01', 30000);
+
+-- 5. Обновление информации о клиенте
+UPDATE Clients SET email = 'new_email@example.com' WHERE client_id = 1;
+
+-- 6. Обновление стоимости аренды квартиры
+UPDATE Apartments SET price = 35000 WHERE apartment_id = 2;
+
+-- 7. Удаление записи о клиенте
+DELETE FROM Clients WHERE client_id = 5;
+
+-- 8. Удаление записи о квартире
+DELETE FROM Apartments WHERE apartment_id = 3;
+
+-- 9. Поиск всех квартир с ценой аренды ниже 30000
+SELECT * FROM Apartments WHERE price < 30000;
+
+-- 10. Поиск всех клиентов с указанием email
+SELECT * FROM Clients WHERE email IS NOT NULL;
+
+-- 11. Получение всех доступных квартир
+SELECT * FROM Apartments WHERE available = TRUE;
+
+-- 12. Поиск клиентов, арендующих квартиры через определенного менеджера
+SELECT c.first_name, c.last_name FROM Rentals r
+JOIN Clients c ON r.client_id = c.client_id
+WHERE r.employee_id = 1;
+
+-- 13. Изменение доступности квартиры
+UPDATE Apartments SET available = FALSE WHERE apartment_id = 1;
+
+-- 14. Получение списка всех квартир по убыванию цены
+SELECT * FROM Apartments ORDER BY price DESC;
+
+-- 15. Подсчет общего количества клиентов
+SELECT COUNT(*) FROM Clients;
+
+-- 16. Подсчет количества занятых квартир
+SELECT COUNT(*) FROM Apartments WHERE available = FALSE;
+
+-- 17. Суммарная выручка от всех договоров аренды
+SELECT SUM(rental_price) FROM Rentals;
+
+-- 18. Средняя стоимость аренды квартир
+SELECT AVG(price) FROM Apartments;
+
+-- 19. Вывод всех договоров аренды, заканчивающихся в текущем месяце
+SELECT * FROM Rentals WHERE end_date BETWEEN '2024-11-01' AND '2024-11-30';
+
+-- 20. Обновление должности сотрудника
+UPDATE Employees SET position = 'Старший менеджер' WHERE employee_id = 1;
+
+-- 21. Поиск квартир с площадью более 70 кв.м
+SELECT * FROM Apartments WHERE area > 70;
+
+-- 22. Поиск всех сотрудников с должностью "Менеджер"
+SELECT * FROM Employees WHERE position = 'Менеджер';
+
+-- 23. Удаление всех договоров аренды, срок которых истек
+DELETE FROM Rentals WHERE end_date < CURRENT_DATE;
+
+-- 24. Установка скидки на аренду для конкретной квартиры
+UPDATE Apartments SET price = price * 0.9 WHERE apartment_id = 2;
+
+-- 25. Получение списка всех клиентов с сортировкой по фамилии
+SELECT * FROM Clients ORDER BY last_name;
+
+-- 26. Сотрудники, имеющих хотя бы 1 договор
+SELECT DISTINCT e.first_name, e.last_name
+FROM Employees e
+JOIN Rentals r ON e.employee_id = r.employee_id
+WHERE r.end_date >= CURRENT_DATE;
+
+-- 27. Изменение номера телефона клиента
+UPDATE Clients SET phone = '+79111234567' WHERE client_id = 1;
+
+-- 28. Добавление нового договора аренды с текущей датой начала
+INSERT INTO Rentals (client_id, apartment_id, employee_id, start_date, end_date, rental_price)
+VALUES (2, 3, 1, CURRENT_DATE, '2025-11-01', 40000);
+
+-- 29. Подсчет количества договоров аренды по каждому клиенту
+SELECT client_id, COUNT(*) AS rental_count
+FROM Rentals
+GROUP BY client_id;
+
+-- 30. Поиск всех сотрудников, связанных с определенными договорами аренды
+SELECT DISTINCT e.first_name, e.last_name FROM Employees e
+JOIN Rentals r ON e.employee_id = r.employee_id;
+```
 
 
 
