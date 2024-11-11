@@ -77,6 +77,68 @@
 ### 2.4. Построение концептуальной модели
 ![Фото](1.png)
 
+## 3. Реализация проекта в среде конкретной СУБД 
+
+Проект реализуется в среде **PostgreSQL**. 
+
+---
+
+### 3.1. Создание таблиц
+
+Для начала создадим необходимые таблицы для хранения информации о клиентах, квартирах, сотрудниках и договорах аренды. Пример SQL-запросов:
+
+```sql
+-- Создание таблицы клиентов
+CREATE TABLE Clients (
+    client_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100),
+    phone VARCHAR(15)
+);
+
+-- Создание таблицы квартир
+CREATE TABLE Apartments (
+    apartment_id SERIAL PRIMARY KEY,
+    address VARCHAR(255) NOT NULL,
+    number_of_rooms INT,
+    area INT,
+    price INT NOT NULL,
+    available BOOLEAN DEFAULT TRUE
+);
+
+-- Создание таблицы сотрудников
+CREATE TABLE Employees (
+    employee_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    position VARCHAR(50)
+);
+
+-- Создание таблицы аренды
+CREATE TABLE Rentals (
+    rental_id SERIAL PRIMARY KEY,
+    client_id INT,
+    apartment_id INT,
+    employee_id INT,
+    start_date DATE,
+    end_date DATE,
+    rental_price INT,
+    FOREIGN KEY (client_id) REFERENCES Clients(client_id),
+    FOREIGN KEY (apartment_id) REFERENCES Apartments(apartment_id),
+    FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+);
+
+Каждая из этих таблиц имеет свои атрибуты:
+
+Clients — информация о клиентах, включая имя, фамилию, email и телефон.
+Apartments — данные о квартирах, такие как адрес, количество комнат, площадь и стоимость аренды.
+Employees — данные о сотрудниках агентства, их должности и имена.
+Rentals — данные о заключенных договорах аренды, ссылаются на клиента, квартиру и сотрудника, который оформил аренду.
+
+
+
+
 
 
 
